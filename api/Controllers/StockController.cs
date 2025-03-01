@@ -6,6 +6,7 @@ using api.Data;
 using api.Dtos.Stock;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -22,16 +23,16 @@ namespace api.Controllers
             _context = context;
         }
         
-        //Get method
+        //Get method. Make async to be faster. Async hard to debug
         [HttpGet]
         //Interface
         //Create List
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             //ToList -> return a list like object
             //Make SQL go out to the database - deferred execution
-            var stocks = _context.Stocks.ToList()
-            .Select(s => s.ToStockDto());    // Select StockDto. Select same as map
+            var stocks = await _context.Stocks.ToListAsync();
+            var stockDto = stocks.Select(s => s.ToStockDto());    // Select StockDto. Select same as map
             return Ok(stocks);
         }
         
@@ -39,12 +40,12 @@ namespace api.Controllers
         [HttpGet("{id}")]
         //Create an API endpoint that will only return one actual item
         //Turn string of id into int, pass into stock;
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             //Search by id
             //Return object (detail) that has the specific id.
             //Find from the list of stocks
-            var stock = _context.Stocks.Find(id);
+            var stock = await _context.Stocks.FindAsync(id);
             if(stock == null)
             {
                 return NotFound();
@@ -55,20 +56,20 @@ namespace api.Controllers
 
         [HttpPost]
         //body of json version of the object
-        public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
+        public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
             var stockModel = stockDto.ToStockFromCreateDTO();
-            _context.Stocks.Add(stockModel);
-            _context.SaveChanges();
+            await _context.Stocks.AddAsync(stockModel);
+            await _context.SaveChangesAsync();
             //id = id of the new stock object at save changesl, return object in form stockDto type
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
         }
 
         [HttpPut]
         [Route("{id}")] //specify ID
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
-            var stockModel = _context.Stocks.FirstOrDefault(x => x.Id == id);
+            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
             if(stockModel == null) return NotFound();
 
             stockModel.Symbol = updateDto.Symbol;
@@ -78,7 +79,7 @@ namespace api.Controllers
             stockModel.Industry = updateDto.Industry;
             stockModel.MarketCap = updateDto.MarketCap;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok(stockModel.ToStockDto());
         }
 
