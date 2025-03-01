@@ -1,4 +1,6 @@
 using api.Data;
+using api.Interfaces;
+using api.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,15 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Add controllers
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 //Add database
 string connStringName = builder.Configuration.GetConnectionString("DefaultConnectionMySQL")!;
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
     //plugin database that want to use
     options.UseMySql(connStringName, ServerVersion.AutoDetect(connStringName));
 });
+
+builder.Services.AddScoped<IStockRepository, StockRepository>();
 
 var app = builder.Build();
 

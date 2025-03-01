@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Stock;
+using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,14 @@ namespace api.Controllers
     public class StockController : ControllerBase
     {
         //private, readonly attribute
+        //use DI - Dependency injection
         private readonly ApplicationDBContext _context;
-        public StockController(ApplicationDBContext context)
+        private readonly IStockRepository _stockRepo;
+        //constructor injection with variable stockRepo
+        public StockController(ApplicationDBContext context, IStockRepository stockRepo)
         {   
             _context = context;
+            _stockRepo = stockRepo;
         }
         
         //Get method. Make async to be faster. Async hard to debug
@@ -31,7 +36,7 @@ namespace api.Controllers
         {
             //ToList -> return a list like object
             //Make SQL go out to the database - deferred execution
-            var stocks = await _context.Stocks.ToListAsync();
+            var stocks = await _stockRepo.GetAllAsync();
             var stockDto = stocks.Select(s => s.ToStockDto());    // Select StockDto. Select same as map
             return Ok(stocks);
         }
