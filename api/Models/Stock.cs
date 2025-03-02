@@ -24,6 +24,6 @@ namespace api.Models
         //Value can up to trillion (one hundred billion)
         public long MarketCap { get; set; }
         //One to many relationship - Comment. A stock can have multiple comments
-        public List<Comment> Comment { get; set; } = new List<Comment>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }
