@@ -20,14 +20,14 @@ namespace api.Repository
         {
             _context = context;
         }
-
+        //Create related model and Dto (DbSet); First model, then dto (DbSet)
         public async Task<Stock> CreateAsync(Stock stockModel)
         {
             await _context.Stocks.AddAsync(stockModel);
             await _context.SaveChangesAsync();
             return stockModel;
         }
-
+        //Delete -> DbSet
         public async Task<Stock?> DeleteAsync(int id)
         {
             var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
@@ -38,6 +38,7 @@ namespace api.Repository
         }
 
         //tách function khai báo trong này
+        //Get -> related to DbSet
         public async Task<List<Stock>> GetAllAsync()
         {
             return await _context.Stocks.ToListAsync();
@@ -47,12 +48,13 @@ namespace api.Repository
         {
             return await _context.Stocks.Include(c => c.Comments).FirstOrDefaultAsync(i => i.Id == id);
         }
-
+        //Exists -> related to DbSet
         public Task<bool> StockExists(int id)
         {
             return _context.Stocks.AnyAsync(s => s.Id == id);
         }
-
+        //DbSet Stock / Comments related to Dto
+        //Update related to DbSet
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
         {
             var existingStock = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);

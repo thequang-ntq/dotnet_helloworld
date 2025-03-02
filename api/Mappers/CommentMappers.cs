@@ -7,6 +7,9 @@ using api.Models;
 
 namespace api.Mappers
 {
+    //We can use model or mappers with Controller Http
+    //If we use model, we need to make it with mappers
+    //If we use Dto - DbSet, we straight it in controller, using _repo
     public static class CommentMappers
     {
         public static CommentDto ToCommentDto(this Comment commentModel)
@@ -27,6 +30,14 @@ namespace api.Mappers
                 Title = commentDto.Title,
                 Content = commentDto.Content,
                 StockId = stockId
+            };
+        }
+        public static Comment ToCommentFromUpdate(this UpdateCommentRequestDto commentDto) //function of commentDto
+        {
+            return new Comment
+            {
+                Title = commentDto.Title,
+                Content = commentDto.Content,
             };
         }
     }
