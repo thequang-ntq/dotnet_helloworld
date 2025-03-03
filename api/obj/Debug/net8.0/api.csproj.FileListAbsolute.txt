@@ -142,3 +142,5 @@ D:\dotNet\HelloWorld\api\bin\Debug\net8.0\Microsoft.AspNetCore.JsonPatch.dll
 D:\dotNet\HelloWorld\api\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 D:\dotNet\HelloWorld\api\bin\Debug\net8.0\Newtonsoft.Json.dll
 D:\dotNet\HelloWorld\api\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
+D:\dotNet\HelloWorld\api\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\dotNet\HelloWorld\api\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
