@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Stock;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -32,12 +33,12 @@ namespace api.Controllers
         [HttpGet]
         //Interface
         //Create List
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState); 
             //ToList -> return a list like object
             //Make SQL go out to the database - deferred execution
-            var stocks = await _stockRepo.GetAllAsync();
+            var stocks = await _stockRepo.GetAllAsync(query);
             var stockDto = stocks.Select(s => s.ToStockDto());    // Select StockDto. Select same as map
             return Ok(stocks);
         }
